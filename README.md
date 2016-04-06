@@ -1,16 +1,12 @@
 # gcc-makedepend
-fmt::printf as extensible C++ replacement for std::printf
-gcc-makedepend is a gcc-based clone of
-[makedepend](https://en.wikipedia.org/wiki/Makedepend).
 
-## Summary
-
-This standalone Perl script provides the functionality
-of _makedepend_ on base of the `-MM` option of _gcc_.
+This standalone Perl script provides the functionality of
+[_makedepend_](https://en.wikipedia.org/wiki/Makedepend).
+on base of the `-MM` option of _gcc_.
 
 ## Synopsis
 
-$$gcc-makedepend$$ {$$-p$$ _prefix_} [_gcc or g++ options_] {_source_}
+__gcc-makedepend__ {__-p$$ _prefix__} [_gcc or g++ options_] {_source_}
 
 ## Description
 
