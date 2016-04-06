@@ -1,7 +1,7 @@
 # gcc-makedepend
 
 This standalone Perl script provides the functionality of
-[_makedepend_](https://en.wikipedia.org/wiki/Makedepend).
+[_makedepend_](https://en.wikipedia.org/wiki/Makedepend)
 on base of the `-MM` option of _gcc_.
 
 ## Synopsis
