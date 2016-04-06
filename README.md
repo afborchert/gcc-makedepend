@@ -6,7 +6,7 @@ on base of the `-MM` option of _gcc_.
 
 ## Synopsis
 
-__gcc-makedepend__ {__-p$$ _prefix__} [_gcc or g++ options_] {_source_}
+__gcc-makedepend__ {__-p__ _prefix_} [_gcc or g++ options_] {_source_}
 
 ## Description
 
