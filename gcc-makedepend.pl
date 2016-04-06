@@ -1,5 +1,5 @@
 #!/usr/bin/env perl
-# Copyright (c) 2016 Andreas F. Borchert
+# Copyright (c) 2010, 2013, 2016 Andreas F. Borchert
 # 
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -65,10 +65,10 @@ sub gen_makefile {
    my $tmpfile = $outfile . ".TMP";
    unlink ($tmpfile) if -f $tmpfile;
    my $out = new IO::File $tmpfile, O_WRONLY|O_CREAT|O_EXCL
-      or die "$cmdname: unable to create $outfile: $!\n";
-   print $out $contents or die "$cmdname: write error on $outfile: $!\n";
-   print $out $dependencies or die "$cmdname: write error on $outfile: $!\n";
-   $out->close or die "$cmdname: write error on $outfile: $!\n";
+      or die "$cmdname: unable to create $tmpfile: $!\n";
+   print $out $contents or die "$cmdname: write error on $tmpfile: $!\n";
+   print $out $dependencies or die "$cmdname: write error on $tmpfile: $!\n";
+   $out->close or die "$cmdname: write error on $tmpfile: $!\n";
    rename($tmpfile, $outfile)
       or die "$cmdname: unable to rename $tmpfile to $outfile: $!\n";
 }
