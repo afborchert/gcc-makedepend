@@ -8,6 +8,12 @@ on base of the `-MM` option of _gcc_.
 
 __gcc-makedepend__ {__-p__ _prefix_} [_gcc or g++ options_] {_source_}
 
+Or, within a _makefile_, allowing you to update it with the
+command `make depend`:
+
+    .PHONY:         depend
+    depend: ;       gcc-makedepend $(CPPFLAGS) $(wildcard *.c)
+
 ## Description
 
 _gcc-makedepend_ works like _makedepend_ but is based upon the
