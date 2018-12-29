@@ -6,7 +6,7 @@ on base of the `-MM` option of _gcc_.
 
 ## Synopsis
 
-__gcc-makedepend__ {__-p__ _prefix_} [_gcc or g++ options_] {_source_}
+__gcc-makedepend__ {__-p__ _prefix_} {__--gcc__ _gcc or g++ compiler name_} {__-o__ _output file_ } [_gcc or g++ options_] {_source_}
 
 Or, within a _makefile_, allowing you to update it with the
 command `make depend`:

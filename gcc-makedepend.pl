@@ -19,26 +19,39 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+# Changes by Arves100:
+	# 1. Added ability to use different gcc names (usefull for crosscompiling)
+	# 2. Added ability to change the output file (no longer need to replace Makefile, usefull when using gitignore)
+
 use strict;
 use warnings;
 use IO::File;
 use IO::Pipe;
 
 my $cmdname = $0; $cmdname =~ s{.*/}{};
-my $usage = "Usage: $cmdname {-p prefix} [gcc or g++ options] {source}\n";
+my $usage = "Usage: $cmdname {-p prefix} {-o output} [-gcc gcc_file] [gcc or g++ options] {source}\n";
 my @prefix;
+my $makefile;
+my @gcc_file;
 while (@ARGV > 1 && $ARGV[0] eq "-p") {
    push(@prefix, $ARGV[1]);
    shift; shift;
 }
+while (@ARGV > 1 && $ARGV[0] eq "-o") {
+   $makefile = $ARGV[1];
+   shift; shift;
+}
+while (@ARGV > 1 && $ARGV[0] eq "--gcc") {
+	push(@gcc_file, $ARGV[1]);
+	shift; shift;
+}
 die $usage if @ARGV == 0;
 
-my $makefile;
-foreach my $candidate (qw(makefile Makefile)) {
-   next unless -f $candidate;
-   $makefile = $candidate;
-   last;
-}
+#foreach my $candidate (qw(makefile Makefile)) {
+#   next unless -f $candidate;
+#   $makefile = $candidate;
+#   last;
+#}
 die "$cmdname: no makefile found in the current directory\n"
    unless defined $makefile;
 
@@ -75,7 +88,7 @@ sub gen_makefile {
 
 sub execute_gcc {
    my (@options) = @_;
-   my @cmd = ("gcc", "-MM", @options);
+   my @cmd = (@gcc_file, "-MM", @options);
    my $cmd = join(" ", @cmd);
    my $pipe = new IO::Pipe;
    my $pid = fork();
