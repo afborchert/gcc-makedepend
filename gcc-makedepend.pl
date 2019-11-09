@@ -1,5 +1,5 @@
 #!/usr/bin/env perl
-# Copyright (c) 2010, 2013, 2016 Andreas F. Borchert
+# Copyright (c) 2010, 2013, 2016, 2019 Andreas F. Borchert
 # 
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -25,10 +25,18 @@ use IO::File;
 use IO::Pipe;
 
 my $cmdname = $0; $cmdname =~ s{.*/}{};
-my $usage = "Usage: $cmdname {-p prefix} [gcc or g++ options] {source}\n";
+my $usage = "Usage: $cmdname {-p prefix} [-gcc gcc-command] [gcc or g++ options] {source}\n";
+my $gcc = "gcc";
+$gcc = $ENV{CC} if defined $ENV{CC};
 my @prefix;
-while (@ARGV > 1 && $ARGV[0] eq "-p") {
-   push(@prefix, $ARGV[1]);
+while (@ARGV > 1) {
+   if ($ARGV[0] eq "-p") {
+      push(@prefix, $ARGV[1]);
+   } elsif ($ARGV[0] eq "-gcc") {
+      $gcc = $ARGV[1];
+   } else {
+      last;
+   }
    shift; shift;
 }
 die $usage if @ARGV == 0;
@@ -75,7 +83,7 @@ sub gen_makefile {
 
 sub execute_gcc {
    my (@options) = @_;
-   my @cmd = ("gcc", "-MM", @options);
+   my @cmd = ($gcc, "-MM", @options);
    my $cmd = join(" ", @cmd);
    my $pipe = new IO::Pipe;
    my $pid = fork();
@@ -129,7 +137,8 @@ gcc-makedepend -- gcc-based makedepend clone
 
 =head1 SYNOPSIS
 
-B<gcc-makedepend> {B<-p> I<prefix>} [I<gcc or g++ options>] {I<source>}
+B<gcc-makedepend> {B<-p> I<prefix>}
+[-gcc gcc-command] [I<gcc or g++ options>] {I<source>}
 
 =head1 DESCRIPTION
 
@@ -160,6 +169,10 @@ is useful if the target directory for output files is not
 the current directory. If multiple prefix options are given,
 each output line by B<gcc> will be repeated for each prefix
 with the individual prefix applied.
+
+Another B<gcc> can be selected either through the environment
+variable B<CC> or through the B<-gcc> option. The latter takes
+precedence.
 
 =head1 HISTORY
 

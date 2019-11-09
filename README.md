@@ -6,13 +6,13 @@ on base of the `-MM` option of _gcc_.
 
 ## Synopsis
 
-__gcc-makedepend__ {__-p__ _prefix_} [_gcc or g++ options_] {_source_}
+__gcc-makedepend__ {__-p__ _prefix_} [__-gcc__ _gcc-command_] [_gcc or g++ options_] {_source_}
 
 Or, within a _makefile_, allowing you to update it with the
 command `make depend`:
 
     .PHONY:         depend
-    depend: ;       gcc-makedepend $(CPPFLAGS) $(wildcard *.c)
+    depend: ;       gcc-makedepend -gcc $(CC) $(CPPFLAGS) $(wildcard *.c)
 
 ## Description
 
@@ -43,6 +43,10 @@ is useful if the target directory for output files is not
 the current directory. If multiple prefix options are given,
 each output line by _gcc_ will be repeated for each prefix
 with the individual prefix applied.
+
+Another _gcc_ can be selected either through the environment
+variable `CC` or through the `-gcc` option. The latter takes
+precedence.
 
 ## History
 
