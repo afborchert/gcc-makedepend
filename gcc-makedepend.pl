@@ -1,5 +1,5 @@
 #!/usr/bin/env perl
-# Copyright (c) 2010, 2013, 2016, 2019 Andreas F. Borchert
+# Copyright (c) 2010, 2013, 2016, 2019, 2021 Andreas F. Borchert
 # 
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -25,15 +25,18 @@ use IO::File;
 use IO::Pipe;
 
 my $cmdname = $0; $cmdname =~ s{.*/}{};
-my $usage = "Usage: $cmdname {-p prefix} [-gcc gcc-command] [gcc or g++ options] {source}\n";
+my $usage = "Usage: $cmdname [-f Makefile] [-gcc gcc-command] {-p prefix} [gcc or g++ options] {source}\n";
 my $gcc = "gcc";
 $gcc = $ENV{CC} if defined $ENV{CC};
+my $makefile;
 my @prefix;
 while (@ARGV > 1) {
    if ($ARGV[0] eq "-p") {
       push(@prefix, $ARGV[1]);
    } elsif ($ARGV[0] eq "-gcc") {
       $gcc = $ARGV[1];
+   } elsif ($ARGV[0] eq "-f") {
+      $makefile = $ARGV[1];
    } else {
       last;
    }
@@ -41,11 +44,14 @@ while (@ARGV > 1) {
 }
 die $usage if @ARGV == 0;
 
-my $makefile;
-foreach my $candidate (qw(makefile Makefile)) {
-   next unless -f $candidate;
-   $makefile = $candidate;
-   last;
+if (defined $makefile) {
+   die "$cmdname: no $makefile found\n" unless -f $makefile;
+} else {
+   foreach my $candidate (qw(makefile Makefile)) {
+      next unless -f $candidate;
+      $makefile = $candidate;
+      last;
+   }
 }
 die "$cmdname: no makefile found in the current directory\n"
    unless defined $makefile;
@@ -137,8 +143,11 @@ gcc-makedepend -- gcc-based makedepend clone
 
 =head1 SYNOPSIS
 
-B<gcc-makedepend> {B<-p> I<prefix>}
-[-gcc gcc-command] [I<gcc or g++ options>] {I<source>}
+B<gcc-makedepend>
+[B<-f> I<Makefile>]
+[B<-gcc> gcc-command]
+{B<-p> I<prefix>}
+[I<gcc or g++ options>] {I<source>}
 
 =head1 DESCRIPTION
 
@@ -149,7 +158,8 @@ known to B<makedepend>.
 
 B<gcc-makedepend> updates either F<makefile> or F<Makefile>,
 whatever is found first, by adding or updating the actual
-list of header file dependencies of all given sources.
+list of header file dependencies of all given sources. An alternative
+name of the Makefile can be specified using the B<-f> option.
 
 Like B<makedepend>, B<gcc-makedepend> generates and honors the
 
