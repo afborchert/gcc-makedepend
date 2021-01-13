@@ -6,13 +6,19 @@ on base of the `-MM` option of _gcc_.
 
 ## Synopsis
 
-__gcc-makedepend__ {__-p__ _prefix_} [__-gcc__ _gcc-command_] [_gcc or g++ options_] {_source_}
+__gcc-makedepend__ [__-f__ _Makefile_] [__-gcc__ _gcc-command_] {__-p__ _prefix_} [_gcc or g++ options_] {_source_}
 
 Or, within a _makefile_, allowing you to update it with the
 command `make depend`:
 
     .PHONY:         depend
     depend: ;       gcc-makedepend -gcc $(CC) $(CPPFLAGS) $(wildcard *.c)
+
+And in case of a non-standard _Makefile_ name it is possible to
+use the -f option:
+
+    MAKEFILE := $(CURDIR)/$(firstword $(MAKEFILE_LIST))
+    depend: ;       gcc-makedepend -f $(MAKEFILE) -gcc $(CC) $(CPPFLAGS) $(wildcard *.c)
 
 ## Description
 
@@ -24,6 +30,7 @@ known to _makedepend_.
 _gcc-makedepend_ updates either _makefile_ or _Makefile_,
 whatever is found first, by adding or updating the actual
 list of header file dependencies of all given sources.
+Alternative Makefile names can be specified using the `-f` option.
 
 Like _makedepend_, _gcc-makedepend_ generates and honors the
 
